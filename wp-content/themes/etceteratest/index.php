@@ -1,6 +1,7 @@
 <?php get_header(); ?>
 
 <main>
+    <?php echo do_shortcode('[real_estate_filter]'); ?>
     <h1>Posts</h1>
     <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
             <article>

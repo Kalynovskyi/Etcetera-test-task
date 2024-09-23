@@ -26,6 +26,11 @@
             </article>
     <?php endwhile;
     endif; ?>
+
+    <div id="secondary" class="sidebar-area">
+        <?php get_sidebar(); // Include the sidebar 
+        ?>
+    </div>
 </main>
 
 <?php get_footer(); ?>
