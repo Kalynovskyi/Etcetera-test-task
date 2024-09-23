@@ -15,13 +15,13 @@
 
                 <h2>Rooms:</h2>
                 <div>
-                    <p><strong>Area:</strong> <?php the_field('area'); ?></p>
+                    <p><strong>Area:</strong> <?php the_field('area'); ?> square meter </p>
                     <p><strong>Amount of rooms:</strong> <?php the_field('amount_of_rooms'); ?></p>
                     <p><strong>Balcony:</strong> <?php the_field('balconies'); ?></p>
                     <p><strong>Bathroom:</strong> <?php the_field('bathroom'); ?></p>
                     <?php if (get_field('estate_image')): ?>
                         <img src="<?php echo wp_get_attachment_url(get_field('estate_image', false, false)); ?>" alt="Room image">
-                    <?php endif;?>
+                    <?php endif; ?>
                 </div>
             </article>
     <?php endwhile;

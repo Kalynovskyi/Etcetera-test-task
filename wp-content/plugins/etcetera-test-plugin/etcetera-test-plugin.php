@@ -6,7 +6,17 @@
  * Version: 1.0
  */
 
-// Plugin registration
+
+/*
+    1.Plugin registration
+    2.Taxonomy registration
+    3.Filter shortcode
+    4.Filter widget
+    5.Filter widget registration
+    6.Ajax connection
+*/
+
+/* Plugin registration */
 
 function etcetera_test_real_estate_custom_post_type()
 {
@@ -46,7 +56,7 @@ function etcetera_test_real_estate_custom_post_type()
 
 add_action('init', 'etcetera_test_real_estate_custom_post_type');
 
-
+/* Taxonomy registration */
 function etcetera_test_real_estate_register_taxonomy()
 {
     $labels = array(
@@ -76,16 +86,12 @@ function etcetera_test_real_estate_register_taxonomy()
 }
 add_action('init', 'etcetera_test_real_estate_register_taxonomy');
 
-
-
-// Filter shortcode
+/* Filter shortcode */
 function etcetera_test_real_estate_filter_shortcode()
 {
-    ob_start(); // Буфер для виводу
-
-    // HTML форма для фільтра
+    ob_start(); 
 ?>
-    <form method="get" action="">
+    <form method="get" action="" id="real-estate-filter-form">
         <div>
             <label for="estate_name">Estate name:</label>
             <input type="text" id="estate_name" name="estate_name" value="<?php echo isset($_GET['estate_name']) ? esc_attr($_GET['estate_name']) : ''; ?>" />
@@ -148,7 +154,7 @@ function etcetera_test_real_estate_filter_shortcode()
         <div>
             <label for="bathroom">Bathroom:</label>
             <select id="bathroom" name="bathroom">
-                <option value="">Виберіть</option>
+                <option value="">Choose</option>
                 <option value="Yes" <?php selected('Yes', $_GET['bathroom']); ?>>Yes</option>
                 <option value="No" <?php selected('No', $_GET['bathroom']); ?>>No</option>
             </select>
@@ -156,9 +162,9 @@ function etcetera_test_real_estate_filter_shortcode()
 
         <button type="submit">Search</button>
     </form>
-
+    <div id="real-estate-results"></div>
     <?php
-    // Отримання результатів пошуку
+
     if (isset($_GET['estate_name']) || isset($_GET['floors']) || isset($_GET['estate_type']) || isset($_GET['environmental_friendliness']) || isset($_GET['area']) || isset($_GET['amount_of_rooms']) || isset($_GET['balconies']) || isset($_GET['bathroom'])) {
         $args = array(
             'post_type' => 'real_estate',
@@ -245,7 +251,7 @@ function etcetera_test_real_estate_filter_shortcode()
                         <img src="<?php echo wp_get_attachment_url(get_field('estate_image', false, false)); ?>" alt="Room image">
                     <?php endif; ?>
                 </div>
-<?php endwhile;
+            <?php endwhile;
         } else {
             echo '<p>There are no results.</p>';
         }
@@ -256,9 +262,7 @@ function etcetera_test_real_estate_filter_shortcode()
 }
 add_shortcode('real_estate_filter', 'etcetera_test_real_estate_filter_shortcode');
 
-
-
-// Filter widget
+/* Filter widget */
 class Etcetera_Test_Real_Estate_Filter_Widget extends WP_Widget
 {
 
@@ -280,8 +284,131 @@ class Etcetera_Test_Real_Estate_Filter_Widget extends WP_Widget
     }
 }
 
-function real_estate_register_widget()
+/* Filter widget registration */
+function etcetera_test_real_estate_register_widget()
 {
     register_widget('Etcetera_Test_Real_Estate_Filter_Widget');
 }
-add_action('widgets_init', 'real_estate_register_widget');
+add_action('widgets_init', 'etcetera_test_real_estate_register_widget');
+
+/* Ajax connection */
+function etcetera_test_real_estate_enqueue_scripts()
+{
+    wp_enqueue_script('real-estate-ajax', plugin_dir_url(__FILE__) . 'js/real-estate-ajax.js', array('jquery'), null, true);
+
+    wp_localize_script('real-estate-ajax', 'realEstateAjax', array(
+        'ajax_url' => admin_url('admin-ajax.php')
+    ));
+}
+add_action('wp_enqueue_scripts', 'etcetera_test_real_estate_enqueue_scripts');
+
+function real_estate_filter_ajax()
+{
+    $paged = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+    $args = array(
+        'post_type' => 'real_estate',
+        'posts_per_page' => 5,
+        'paged' => $paged,
+        'meta_query' => array(
+            'relation' => 'AND',
+        ),
+    );
+
+    if (!empty($_GET['estate_name'])) {
+        $args['meta_query'][] = array(
+            'key' => 'estate_name',
+            'value' => sanitize_text_field($_GET['estate_name']),
+            'compare' => 'LIKE',
+        );
+    }
+
+    if (!empty($_GET['floors'])) {
+        $args['meta_query'][] = array(
+            'key' => 'floors',
+            'value' => intval($_GET['floors']),
+            'compare' => '=',
+        );
+    }
+
+    if (!empty($_GET['estate_type'])) {
+        $args['meta_query'][] = array(
+            'key' => 'estate_type',
+            'value' => sanitize_text_field($_GET['estate_type']),
+            'compare' => '=',
+        );
+    }
+
+    if (!empty($_GET['environmental_friendliness'])) {
+        $args['meta_query'][] = array(
+            'key' => 'environmental_friendliness',
+            'value' => intval($_GET['environmental_friendliness']),
+            'compare' => '=',
+        );
+    }
+
+    if (!empty($_GET['amount_of_rooms'])) {
+        $args['meta_query'][] = array(
+            'key' => 'amount_of_rooms',
+            'value' => intval($_GET['amount_of_rooms']),
+            'compare' => '=',
+        );
+    }
+
+    if (!empty($_GET['balconies'])) {
+        $args['meta_query'][] = array(
+            'key' => 'balconies',
+            'value' => sanitize_text_field($_GET['balconies']),
+            'compare' => '=',
+        );
+    }
+
+    if (!empty($_GET['bathroom'])) {
+        $args['meta_query'][] = array(
+            'key' => 'bathroom',
+            'value' => sanitize_text_field($_GET['bathroom']),
+            'compare' => '=',
+        );
+    }
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        echo '<div class="real-estate-list">';
+        while ($query->have_posts()) : $query->the_post();
+            ?>
+            <div class="real-estate-item">
+                <a href="<?php the_permalink(); ?>">
+                    <?php if (has_post_thumbnail()): ?>
+                        <div class="real-estate-thumbnail">
+                            <?php the_post_thumbnail('medium'); ?>
+                        </div>
+                    <?php endif; ?>
+                    <h3><?php the_title(); ?></h3>
+                    <p><?php the_excerpt(); ?></p>
+                </a>
+
+                <p>Floors amount: <?php the_field('floors'); ?></p>
+                <p>Estate type: <?php the_field('estate_type'); ?></p>
+            </div>
+<?php
+        endwhile;
+        echo '</div>';
+
+        $total_pages = $query->max_num_pages;
+        if ($total_pages > 1) {
+            echo '<div class="pagination">';
+            for ($i = 1; $i <= $total_pages; $i++) {
+                echo '<a href="#" data-page="' . $i . '">' . $i . '</a>';
+            }
+            echo '</div>';
+        }
+    } else {
+        echo '<p>No results.</p>';
+    }
+
+    wp_reset_postdata();
+    wp_die();
+}
+add_action('wp_ajax_real_estate_filter', 'real_estate_filter_ajax');
+add_action('wp_ajax_nopriv_real_estate_filter', 'real_estate_filter_ajax');
