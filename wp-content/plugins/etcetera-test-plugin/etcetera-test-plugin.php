@@ -11,10 +11,10 @@
 function etcetera_test_real_estate_custom_post_type()
 {
     $labels = array(
-        'name' => 'Estate Name',
-        'singular_name' => 'Estate Name',
-        'menu_name' => 'Estate Name',
-        'name_admin_bar' => 'Estate Name',
+        'name' => 'Estate',
+        'singular_name' => 'Estate',
+        'menu_name' => 'Estate',
+        'name_admin_bar' => 'Estate',
         'add_new' => 'Add new',
         'add_new_item' => 'Add new estate',
         'new_item' => 'New estate',
