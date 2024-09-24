@@ -1,0 +1,77 @@
+/*
+Theme Name: Etcetera Test
+Description: Etcetera Test Theme
+Version: 1.0
+*/
+
+@import "structure";
+@import "grid";
+
+nav {
+    text-align: center;
+    padding: $unit-measure-20px 0;
+
+    .menu {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        li.page_item {
+            margin: 0 $unit-measure-20px;
+            font-size: $unit-measure-20px;
+        }
+    }
+}
+
+.widget_etcetera_test_real_estate_filter_widget {
+
+    margin: $unit-measure-15px 0;
+
+    .widget-title {
+        margin-bottom: $unit-measure-15px;
+    }
+}
+
+.estate-filter-form {
+    background: $secondary-color;
+}
+
+.real-estate-results {
+
+    .estate {
+
+        &-item {
+            margin: $unit-measure-15px 0;
+
+            * {
+                margin: 0.5rem 0;
+
+                &:first-child,
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+    }
+
+    .pagination {
+
+        a {
+            margin: 0 $unit-measure-15px;
+
+            &.active {
+                color: $accent-color;
+            }
+        }
+    }
+}
+
+.single-estate * ,
+.estate-item *  {
+    margin: 0.5rem 0;
+
+    &:first-child,
+    &:last-child {
+        margin: 0;
+    }
+}

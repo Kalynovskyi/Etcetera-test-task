@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <header>
+    <header class="wrapper">
         <nav>
             <?php
             wp_nav_menu(array(
@@ -19,3 +19,7 @@
             ?>
         </nav>
     </header>
+
+    <div class="wrapper">
+
+    

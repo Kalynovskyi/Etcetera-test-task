@@ -11,7 +11,7 @@ add_action('after_setup_theme', 'etcetera_test_theme_setup');
 // Styles
 function etcetera_test_enqueue_styles()
 {
-    wp_enqueue_style('style', get_stylesheet_uri());
+    wp_enqueue_style('parent-theme-style', get_template_directory_uri() . '/style.css');
 }
 add_action('wp_enqueue_scripts', 'etcetera_test_enqueue_styles');
 

@@ -91,7 +91,7 @@ function etcetera_test_real_estate_filter_shortcode()
 {
     ob_start(); 
 ?>
-    <form method="get" action="" id="real-estate-filter-form">
+    <form method="get" action="" id="real-estate-filter-form" class="estate-filter-form card">
         <div>
             <label for="estate_name">Estate name:</label>
             <input type="text" id="estate_name" name="estate_name" value="<?php echo isset($_GET['estate_name']) ? esc_attr($_GET['estate_name']) : ''; ?>" />
@@ -128,7 +128,7 @@ function etcetera_test_real_estate_filter_shortcode()
         </div>
 
         <div>
-            <label for="area">area:</label>
+            <label for="area">Area:</label>
             <input type="text" id="area" name="area" value="<?php echo isset($_GET['area']) ? esc_attr($_GET['area']) : ''; ?>" />
         </div>
 
@@ -162,7 +162,7 @@ function etcetera_test_real_estate_filter_shortcode()
 
         <button type="submit">Search</button>
     </form>
-    <div id="real-estate-results"></div>
+    <div id="real-estate-results" class="real-estate-results"></div>
     <?php
 
     if (isset($_GET['estate_name']) || isset($_GET['floors']) || isset($_GET['estate_type']) || isset($_GET['environmental_friendliness']) || isset($_GET['area']) || isset($_GET['amount_of_rooms']) || isset($_GET['balconies']) || isset($_GET['bathroom'])) {
@@ -238,9 +238,9 @@ function etcetera_test_real_estate_filter_shortcode()
         }
 
         $query = new WP_Query($args);
-
         if ($query->have_posts()) {
             echo '<h2>Search results:</h2>';
+            
             while ($query->have_posts()) : $query->the_post(); ?>
                 <div>
                     <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
@@ -374,13 +374,13 @@ function real_estate_filter_ajax()
     $query = new WP_Query($args);
 
     if ($query->have_posts()) {
-        echo '<div class="real-estate-list">';
+        echo '<ul class="estate">';
         while ($query->have_posts()) : $query->the_post();
             ?>
-            <div class="real-estate-item">
+            <li class="estate-item card">
                 <a href="<?php the_permalink(); ?>">
                     <?php if (has_post_thumbnail()): ?>
-                        <div class="real-estate-thumbnail">
+                        <div class="estate-item-thumbnail">
                             <?php the_post_thumbnail('medium'); ?>
                         </div>
                     <?php endif; ?>
@@ -390,10 +390,14 @@ function real_estate_filter_ajax()
 
                 <p>Floors amount: <?php the_field('floors'); ?></p>
                 <p>Estate type: <?php the_field('estate_type'); ?></p>
-            </div>
+                <p>Environmental friendliness: <?php the_field('environmental_friendliness'); ?></p>
+                    <?php if (get_field('estate_image')): ?>
+                        <img src="<?php echo wp_get_attachment_url(get_field('estate_image', false, false)); ?>" alt="Room image">
+                    <?php endif; ?>
+            </li>
 <?php
         endwhile;
-        echo '</div>';
+        echo '</ul>';
 
         $total_pages = $query->max_num_pages;
         if ($total_pages > 1) {

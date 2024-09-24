@@ -1,0 +1,83 @@
+@import "abstracts/abstracts";
+
+body, 
+html {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+
+}
+
+.wrapper {
+    max-width: $wrapper-size;
+    margin: 0 auto;
+    position: relative;
+
+    @media screen and (max-width: $wrapper-size ) {
+		margin: 0 $unit-measure-20px;
+	}
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+    @include transition;
+
+    &:hover {
+        color: $accent-color;
+    }
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    padding: 0;
+    margin: 0;
+}
+
+p {
+    margin: 0;
+}
+
+img {
+    width: 100%;
+}
+
+input,
+select {
+    display: block;
+    width: 100%;
+    box-sizing:border-box;
+    padding: 0.5rem $unit-measure-15px;
+    margin: $unit-measure-15px 0;
+    border-radius: 0.25rem;
+    border: none;
+}
+
+button {
+    padding: $unit-measure-15px $unit-measure-20px;
+    background-color: $accent-color;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    @include transition;
+
+    &:hover {
+        background-color: rgba($accent-color, 0.8);
+    }
+}
+
+.card {
+    padding: $unit-measure-15px;
+    box-shadow: 0px 2px 4px #d6d6d6;
+    border-radius: $unit-measure-15px
+}
